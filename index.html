@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GIST 2026 연구활동종사자 신규교육</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C8102E;
+    --dark: #0d0d0d;
+    --card-bg: #141428;
+    --text: #e8e8f0;
+    --muted: #8888aa;
+    --chem: #e85d04;
+    --elec: #0077b6;
+    --glow-chem: rgba(232,93,4,0.25);
+    --glow-elec: rgba(0,119,182,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,16,46,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,16,46,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 56px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .gist-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(200,16,46,0.12);
+    border: 1px solid rgba(200,16,46,0.35);
+    border-radius: 100px;
+    padding: 8px 20px;
+    margin-bottom: 24px;
+  }
+
+  .gist-logo { display: flex; gap: 2px; align-items: center; }
+
+  .gist-logo span {
+    display: inline-flex;
+    width: 16px; height: 16px;
+    font-size: 8px; font-weight: 900;
+    color: white;
+    align-items: center; justify-content: center;
+    border-radius: 2px;
+  }
+
+  .gist-logo .g, .gist-logo .i, .gist-logo .t { background: var(--red); }
+  .gist-logo .s { background: white; color: var(--red); }
+
+  .gist-badge-text {
+    font-size: 12px; font-weight: 500;
+    color: rgba(200,16,46,0.9);
+    letter-spacing: 0.05em;
+  }
+
+  .header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 8vw, 72px);
+    letter-spacing: 0.06em;
+    line-height: 1;
+    color: white;
+    margin-bottom: 8px;
+  }
+
+  .header-title .accent { color: var(--red); }
+
+  .header-sub {
+    font-size: 14px; color: var(--muted);
+    font-weight: 300; letter-spacing: 0.08em;
+    margin-top: 12px;
+  }
+
+  .header-date {
+    display: inline-block;
+    margin-top: 16px; font-size: 13px;
+    color: var(--muted);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px; padding: 4px 16px;
+  }
+
+  /* Cards */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .card.chem { animation-delay: 0.1s; }
+  .card.elec { animation-delay: 0.2s; }
+
+  .card.chem:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px var(--glow-chem);
+    border-color: rgba(232,93,4,0.3);
+  }
+  .card.elec:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px var(--glow-elec);
+    border-color: rgba(0,119,182,0.3);
+  }
+
+  .card-header {
+    padding: 28px 28px 20px;
+    position: relative;
+  }
+
+  .card.chem .card-header { background: linear-gradient(135deg, rgba(232,93,4,0.18) 0%, transparent 60%); }
+  .card.elec .card-header { background: linear-gradient(135deg, rgba(0,119,182,0.18) 0%, transparent 60%); }
+
+  .card-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px; line-height: 1;
+    position: absolute; top: 12px; right: 20px;
+    letter-spacing: -2px;
+  }
+  .card.chem .card-num { color: var(--chem); opacity: 0.2; }
+  .card.elec .card-num { color: var(--elec); opacity: 0.2; }
+
+  .card-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; margin-bottom: 16px;
+  }
+  .card.chem .card-icon { background: rgba(232,93,4,0.15); }
+  .card.elec .card-icon { background: rgba(0,119,182,0.15); }
+
+  .card-label {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .card.chem .card-label { color: var(--chem); }
+  .card.elec .card-label { color: var(--elec); }
+
+  .card-title {
+    font-size: 22px; font-weight: 700;
+    color: white; line-height: 1.3; margin-bottom: 4px;
+  }
+
+  .card-title-en {
+    font-size: 12px; color: var(--muted);
+    font-weight: 300; letter-spacing: 0.05em;
+  }
+
+  .card-body { padding: 0 28px 28px; }
+
+  .card-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin-bottom: 20px;
+  }
+
+  .card-info {
+    display: flex; flex-direction: column;
+    gap: 10px; margin-bottom: 20px;
+  }
+
+  .info-row {
+    display: flex; align-items: center;
+    gap: 10px; font-size: 13px; color: var(--muted);
+  }
+
+  .info-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%; flex-shrink: 0;
+  }
+  .card.chem .info-dot { background: var(--chem); }
+  .card.elec .info-dot { background: var(--elec); }
+
+  .topics {
+    display: flex; flex-wrap: wrap;
+    gap: 6px; margin-bottom: 24px;
+  }
+
+  .topic-tag {
+    font-size: 11px; padding: 4px 10px;
+    border-radius: 100px; font-weight: 500;
+  }
+  .card.chem .topic-tag {
+    background: rgba(232,93,4,0.1);
+    color: rgba(232,93,4,0.85);
+    border: 1px solid rgba(232,93,4,0.2);
+  }
+  .card.elec .topic-tag {
+    background: rgba(0,119,182,0.1);
+    color: rgba(0,119,182,0.85);
+    border: 1px solid rgba(0,119,182,0.2);
+  }
+
+  /* Buttons */
+  .btn-group {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .btn {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; padding: 14px 20px; border-radius: 12px;
+    font-size: 14px; font-weight: 700;
+    text-decoration: none;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer; border: none;
+    transition: all 0.2s ease;
+    letter-spacing: 0.02em;
+  }
+
+  .btn-primary { color: white; }
+
+  .card.chem .btn-primary {
+    background: linear-gradient(135deg, #e85d04, #f48c06);
+    box-shadow: 0 4px 20px rgba(232,93,4,0.4);
+  }
+  .card.elec .btn-primary {
+    background: linear-gradient(135deg, #0077b6, #0096c7);
+    box-shadow: 0 4px 20px rgba(0,119,182,0.4);
+  }
+  .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+  /* PDF Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.88);
+    z-index: 1000;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(8px);
+    padding: 16px;
+  }
+  .modal-overlay.active {
+    display: flex;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .modal {
+    background: #1a1a2e;
+    border-radius: 20px;
+    width: 100%; max-width: 900px;
+    height: 90vh;
+    display: flex; flex-direction: column;
+    border: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+    animation: scaleIn 0.25s ease;
+  }
+
+  .modal-header {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    flex-shrink: 0;
+    gap: 12px;
+  }
+
+  .modal-title {
+    font-size: 14px; font-weight: 600;
+    white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .modal-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  .modal-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 8px;
+    font-size: 12px; font-weight: 600;
+    text-decoration: none; border: none; cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .modal-btn-dl {
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .modal-btn-dl:hover { background: rgba(255,255,255,0.15); }
+
+  .modal-close {
+    background: rgba(255,255,255,0.06);
+    color: white; width: 32px; height: 32px;
+    border-radius: 50%; cursor: pointer;
+    font-size: 16px; border: none;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .modal-close:hover { background: rgba(255,80,80,0.3); }
+
+  .modal-body { flex: 1; overflow: hidden; background: #111; }
+
+  .modal-body iframe {
+    width: 100%; height: 100%; border: none;
+    display: block;
+  }
+
+  /* 모바일에서 iframe PDF 안 될 때 대체 메시지 */
+  .pdf-fallback {
+    display: none;
+    flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100%; gap: 16px; padding: 32px;
+    text-align: center;
+  }
+  .pdf-fallback-icon { font-size: 48px; }
+  .pdf-fallback-text { font-size: 15px; color: var(--muted); line-height: 1.6; }
+  .pdf-fallback-btn {
+    padding: 14px 28px; border-radius: 12px;
+    font-size: 15px; font-weight: 700;
+    text-decoration: none; color: white;
+    transition: all 0.2s;
+  }
+
+  /* Footer */
+  .footer-note {
+    text-align: center; font-size: 12px;
+    color: var(--muted);
+    animation: fadeUp 1s ease 0.4s both;
+    line-height: 2;
+  }
+  .footer-note strong { color: rgba(255,255,255,0.4); }
+  .footer-note a { color: rgba(200,16,46,0.7); text-decoration: none; }
+  .footer-note a:hover { color: var(--red); }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  @media (max-width: 480px) {
+    .cards { grid-template-columns: 1fr; }
+    .modal { height: 95vh; border-radius: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="gist-badge">
+      <div class="gist-logo">
+        <span class="g">G</span><span class="i">I</span><span class="s">S</span><span class="t">T</span>
+      </div>
+      <span class="gist-badge-text">광주과학기술원 안전팀</span>
+    </div>
+    <div class="header-title">2026 <span class="accent">신규</span>교육<br>교재 자료실</div>
+    <div class="header-sub">2026년 상반기 연구활동종사자 신규교육</div>
+    <div class="header-date">📅 2026. 3. 31.(화)</div>
+  </div>
+
+  <div class="cards">
+
+    <!-- 화학 안전 -->
+    <div class="card chem">
+      <div class="card-header">
+        <div class="card-num">03</div>
+        <div class="card-icon">🧪</div>
+        <div class="card-label">Chemical Safety</div>
+        <div class="card-title">화학 안전</div>
+        <div class="card-title-en">여러분 安全하십니까?</div>
+      </div>
+      <div class="card-body">
+        <div class="card-divider"></div>
+        <div class="card-info">
+          <div class="info-row">
+            <span class="info-dot"></span>
+            <span>강사: 최재진 (한국화학연구원 KRICT)</span>
+          </div>
+          <div class="info-row">
+            <span class="info-dot"></span>
+            <span>분량: 62 슬라이드</span>
+          </div>
+        </div>
+        <div class="topics">
+          <span class="topic-tag">사고사례</span>
+          <span class="topic-tag">안전문화</span>
+          <span class="topic-tag">화학물질 취급</span>
+          <span class="topic-tag">폐액관리</span>
+          <span class="topic-tag">보호장비(PPE)</span>
+          <span class="topic-tag">MSDS</span>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="openPDF('chem')">
+            📄 교재 바로 보기
+          </button>
+          <a class="btn btn-secondary"
+             href="https://safety.gist.ac.kr/download/byName/BoardContentsInfo_8/3.%20(20260331%EC%A0%9C%EC%B6%9C%EB%B3%B8)%EC%97%AC%EB%9F%AC%EB%B6%84%20%EC%95%88%EC%A0%84%ED%95%98%EC%8B%AD%EB%8B%88%EA%B9%8C_1.pdf/20260422112306598_uKvw.pdf/"
+             target="_blank">
+            ⬇ PDF 다운로드
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 전기 안전 -->
+    <div class="card elec">
+      <div class="card-header">
+        <div class="card-num">04</div>
+        <div class="card-icon">⚡</div>
+        <div class="card-label">Electrical Safety</div>
+        <div class="card-title">전기 안전</div>
+        <div class="card-title-en">전기설비 위험방지기술</div>
+      </div>
+      <div class="card-body">
+        <div class="card-divider"></div>
+        <div class="card-info">
+          <div class="info-row">
+            <span class="info-dot"></span>
+            <span>강사: 이진환 팀장 (키엘연구원)</span>
+          </div>
+          <div class="info-row">
+            <span class="info-dot"></span>
+            <span>분량: 31 슬라이드</span>
+          </div>
+        </div>
+        <div class="topics">
+          <span class="topic-tag">감전사고</span>
+          <span class="topic-tag">전기화재</span>
+          <span class="topic-tag">분전반</span>
+          <span class="topic-tag">접지설비</span>
+          <span class="topic-tag">누전차단기</span>
+          <span class="topic-tag">재해방지</span>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="openPDF('elec')">
+            📄 교재 바로 보기
+          </button>
+          <a class="btn btn-secondary"
+             href="https://safety.gist.ac.kr/download/byName/BoardContentsInfo_8/4.%20%EA%B0%95%EC%9D%98%EC%9E%90%EB%A3%8C_%EC%A0%84%EA%B8%B0%EC%84%A4%EB%B9%84%20%EC%9C%84%ED%97%98%EB%B0%A9%EC%A7%80%EA%B8%B0%EC%88%A0_%EA%B4%91%EC%A3%BC%EA%B3%BC%ED%95%99%EA%B8%B0%EC%88%A0%EC%9B%90_%EC%9D%B4%EC%A7%84%ED%99%98_26.03.31(%ED%99%94)-%EB%B3%B5%EC%82%AC.pdf/20260422112330221_6UXQ.pdf/"
+             target="_blank">
+            ⬇ PDF 다운로드
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-note">
+    <strong>광주과학기술원 안전팀</strong><br>
+    자료실: <a href="https://safety.gist.ac.kr/ushm/safeDocform/detail.do?contentsIdx=408" target="_blank">safety.gist.ac.kr</a>
+  </div>
+
+</div>
+
+<!-- PDF 뷰어 모달 -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title"></span>
+      <div class="modal-actions">
+        <a class="modal-btn modal-btn-dl" id="modal-dl" href="#" target="_blank">⬇ 다운로드</a>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <iframe id="modal-iframe" src="" title="PDF 뷰어" allowfullscreen></iframe>
+      <!-- 모바일 폴백 -->
+      <div class="pdf-fallback" id="pdf-fallback">
+        <div class="pdf-fallback-icon">📄</div>
+        <div class="pdf-fallback-text">
+          모바일에서는 PDF를 직접 열어서 확인해주세요
+        </div>
+        <a class="pdf-fallback-btn" id="fallback-btn" href="#" target="_blank"
+           style="background: linear-gradient(135deg,#e85d04,#f48c06);">
+          PDF 열기
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const PDF = {
+    chem: {
+      title: '화학 안전 — 여러분 安全하십니까?',
+      url: 'https://safety.gist.ac.kr/download/byName/BoardContentsInfo_8/3.%20(20260331%EC%A0%9C%EC%B6%9C%EB%B3%B8)%EC%97%AC%EB%9F%AC%EB%B6%84%20%EC%95%88%EC%A0%84%ED%95%98%EC%8B%AD%EB%8B%88%EA%B9%8C_1.pdf/20260422112306598_uKvw.pdf/'
+    },
+    elec: {
+      title: '전기 안전 — 전기설비 위험방지기술',
+      url: 'https://safety.gist.ac.kr/download/byName/BoardContentsInfo_8/4.%20%EA%B0%95%EC%9D%98%EC%9E%90%EB%A3%8C_%EC%A0%84%EA%B8%B0%EC%84%A4%EB%B9%84%20%EC%9C%84%ED%97%98%EB%B0%A9%EC%A7%80%EA%B8%B0%EC%88%A0_%EA%B4%91%EC%A3%BC%EA%B3%BC%ED%95%99%EA%B8%B0%EC%88%A0%EC%9B%90_%EC%9D%B4%EC%A7%84%ED%99%98_26.03.31(%ED%99%94)-%EB%B3%B5%EC%82%AC.pdf/20260422112330221_6UXQ.pdf/'
+    }
+  };
+
+  function openPDF(key) {
+    const data = PDF[key];
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    document.getElementById('modal-title').textContent = data.title;
+    document.getElementById('modal-dl').href = data.url;
+    document.getElementById('fallback-btn').href = data.url;
+
+    // 모바일이면 폴백, PC면 iframe
+    const iframe = document.getElementById('modal-iframe');
+    const fallback = document.getElementById('pdf-fallback');
+
+    if (isMobile) {
+      iframe.style.display = 'none';
+      fallback.style.display = 'flex';
+      // 폴백 버튼 색상 교체
+      const btn = document.getElementById('fallback-btn');
+      btn.style.background = key === 'chem'
+        ? 'linear-gradient(135deg,#e85d04,#f48c06)'
+        : 'linear-gradient(135deg,#0077b6,#0096c7)';
+    } else {
+      iframe.style.display = 'block';
+      fallback.style.display = 'none';
+      iframe.src = data.url;
+    }
+
+    document.getElementById('modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('active');
+    document.getElementById('modal-iframe').src = '';
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('modal')) closeModal();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+
+</body>
+</html>
